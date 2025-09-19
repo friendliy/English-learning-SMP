@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vocabulary Harian - English Learning SMP</title>
   <link rel="stylesheet" href="style.css">
+  <script src="audio/tone-generator.js"></script>
   <script src="auth.js"></script>
   <script src="header.js"></script>
   <script src="data.js"></script>
@@ -521,15 +522,38 @@
       }
       
       playAudio(word) {
-        // Simulate audio playback with speech synthesis
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(word);
-          utterance.lang = 'en-US';
-          utterance.rate = 0.8;
-          speechSynthesis.speak(utterance);
-        } else {
-          alert('Audio tidak tersedia di browser ini');
-        }
+        // Primary: Try to play physical audio file
+        const audio = new Audio();
+        const audioFile = `./audio/${word.toLowerCase().replace(/\s+/g, '_')}.mp3`;
+        
+        audio.src = audioFile;
+        audio.onerror = () => {
+          // Fallback 1: Try alternative audio sources
+          const altSources = [
+            `https://ssl.gstatic.com/dictionary/static/sounds/oxford/${word.toLowerCase()}_1_gb_1.mp3`,
+            `https://ssl.gstatic.com/dictionary/static/sounds/oxford/${word.toLowerCase()}_1_us_1.mp3`
+          ];
+          
+          let sourceIndex = 0;
+          
+          const tryNextSource = () => {
+            if (sourceIndex < altSources.length) {
+              audio.src = altSources[sourceIndex];
+              sourceIndex++;
+            } else {
+              // Fallback 2: Use Speech Synthesis with better error handling
+              this.fallbackTextToSpeech(word);
+            }
+          };
+          
+          audio.onerror = tryNextSource;
+          tryNextSource();
+        };
+        
+        audio.play().catch(error => {
+          console.log('Audio play failed:', error);
+          this.fallbackTextToSpeech(word);
+        });
         
         // Mark as learned and add score
         if (!this.learned.includes(word)) {
@@ -544,6 +568,114 @@
             tambahSkor(5, 0, 1);
           }
         }
+      }
+      
+      fallbackTextToSpeech(word) {
+        if ('speechSynthesis' in window) {
+          // Cancel any ongoing speech
+          speechSynthesis.cancel();
+          
+          // Create new utterance
+          const utterance = new SpeechSynthesisUtterance(word);
+          utterance.lang = 'en-US';
+          utterance.rate = 0.7;
+          utterance.pitch = 1;
+          utterance.volume = 1;
+          
+          // Get available voices and prefer English ones
+          const voices = speechSynthesis.getVoices();
+          const englishVoice = voices.find(voice => 
+            voice.lang.includes('en-') && voice.name.includes('Google')
+          ) || voices.find(voice => voice.lang.includes('en-'));
+          
+          if (englishVoice) {
+            utterance.voice = englishVoice;
+          }
+          
+          utterance.onerror = (event) => {
+            console.error('Speech synthesis error:', event);
+            this.finalFallbackAudio(word);
+          };
+          
+          try {
+            speechSynthesis.speak(utterance);
+          } catch (error) {
+            console.error('Speech synthesis failed:', error);
+            this.finalFallbackAudio(word);
+          }
+        } else {
+          this.finalFallbackAudio(word);
+        }
+      }
+      
+      finalFallbackAudio(word) {
+        // Use tone generator as final fallback
+        if (typeof generateToneAudio === 'function') {
+          generateToneAudio(word).then(() => {
+            this.showAudioInfo('🎵 Audio placeholder dimainkan untuk: ' + word);
+          }).catch(() => {
+            this.showAudioError();
+          });
+        } else {
+          this.showAudioError();
+        }
+      }
+      
+      showAudioInfo(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: #3498db;
+          color: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          z-index: 10000;
+          font-family: Arial, sans-serif;
+          animation: slideIn 0.5s ease-out;
+        `;
+        
+        notification.innerHTML = `<div style="font-weight: bold;">${message}</div>`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 2000);
+      }
+      
+      showAudioError() {
+        // Show user-friendly error message
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: #e74c3c;
+          color: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          z-index: 10000;
+          font-family: Arial, sans-serif;
+          animation: slideIn 0.5s ease-out;
+        `;
+        
+        notification.innerHTML = `
+          <div style="font-weight: bold;">🔇 Audio tidak tersedia</div>
+          <div style="font-size: 12px; margin-top: 5px;">Coba refresh halaman atau gunakan browser lain</div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 3000);
       }
       
       toggleFavorite(word) {

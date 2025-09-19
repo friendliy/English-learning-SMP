@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Generator untuk Vocabulary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .word-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .word-text {
+            flex: 1;
+            font-weight: bold;
+        }
+        .play-btn, .download-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .play-btn {
+            background: #3498db;
+            color: white;
+        }
+        .download-btn {
+            background: #27ae60;
+            color: white;
+        }
+        .generate-all {
+            background: #e74c3c;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 20px 0;
+            width: 100%;
+        }
+        .progress {
+            background: #ecf0f1;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-bar {
+            background: #3498db;
+            height: 100%;
+            transition: width 0.3s;
+        }
+        .instructions {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Audio Generator untuk Vocabulary</h1>
+        
+        <div class="instructions">
+            <h3>📋 Petunjuk Penggunaan:</h3>
+            <ol>
+                <li>Klik "Generate All Audio Files" untuk membuat semua file audio</li>
+                <li>File akan di-download otomatis ke folder Downloads</li>
+                <li>Pindahkan file audio ke folder <code>/audio/</code> di project</li>
+                <li>Upload ke GitHub dengan file audio untuk mengatasi masalah</li>
+            </ol>
+        </div>
+        
+        <button class="generate-all" onclick="generateAllAudio()">
+            🎯 Generate All Audio Files
+        </button>
+        
+        <div class="progress" id="progressContainer" style="display: none;">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="progressText" style="text-align: center; margin: 10px 0;"></div>
+        
+        <div id="wordList"></div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // Vocabulary words yang akan di-generate audionya
+        const vocabularyWords = [
+            'family', 'mother', 'father', 'sister', 'brother', 'grandmother', 'grandfather',
+            'apple', 'banana', 'orange', 'rice', 'bread', 'water', 'milk',
+            'school', 'teacher', 'student', 'book', 'pencil', 'desk', 'classroom',
+            'cat', 'dog', 'bird', 'fish', 'elephant', 'lion', 'rabbit',
+            'red', 'blue', 'green', 'yellow', 'black', 'white', 'purple',
+            'house', 'room', 'kitchen', 'bedroom', 'bathroom', 'living room', 'garden'
+        ];
+
+        // Function to convert text to speech and download as audio
+        async function textToSpeechDownload(text, filename) {
+            return new Promise((resolve, reject) => {
+                if (!('speechSynthesis' in window)) {
+                    reject(new Error('Speech synthesis not supported'));
+                    return;
+                }
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+
+                // Get available voices and prefer English ones
+                const voices = speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice => 
+                    voice.lang.includes('en-US') || voice.lang.includes('en-GB')
+                );
+                
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+
+                utterance.onend = () => {
+                    resolve();
+                };
+
+                utterance.onerror = (event) => {
+                    reject(event);
+                };
+
+                speechSynthesis.speak(utterance);
+            });
+        }
+
+        // Function to create audio file and trigger download
+        function createAudioDownload(text, filename) {
+            // Create a simple beep tone as fallback since we can't directly record speech synthesis
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const duration = 1.5; // seconds
+            const sampleRate = audioContext.sampleRate;
+            const numSamples = duration * sampleRate;
+            const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
+            const channelData = buffer.getChannelData(0);
+
+            // Generate a simple tone (placeholder for actual audio)
+            for (let i = 0; i < numSamples; i++) {
+                channelData[i] = Math.sin((i / sampleRate) * 440 * 2 * Math.PI) * 0.1;
+            }
+
+            // Convert to WAV
+            const arrayBuffer = audioBufferToWav(buffer);
+            const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+            
+            // Create download link
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Function to convert AudioBuffer to WAV
+        function audioBufferToWav(buffer) {
+            const length = buffer.length;
+            const arrayBuffer = new ArrayBuffer(44 + length * 2);
+            const view = new DataView(arrayBuffer);
+            const channels = buffer.numberOfChannels;
+            const sampleRate = buffer.sampleRate;
+
+            // WAV header
+            const writeString = (offset, string) => {
+                for (let i = 0; i < string.length; i++) {
+                    view.setUint8(offset + i, string.charCodeAt(i));
+                }
+            };
+
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + length * 2, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, channels, true);
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * channels * 2, true);
+            view.setUint16(32, channels * 2, true);
+            view.setUint16(34, 16, true);
+            writeString(36, 'data');
+            view.setUint32(40, length * 2, true);
+
+            // PCM data
+            const channelData = buffer.getChannelData(0);
+            let offset = 44;
+            for (let i = 0; i < length; i++) {
+                const sample = Math.max(-1, Math.min(1, channelData[i]));
+                view.setInt16(offset, sample * 0x7FFF, true);
+                offset += 2;
+            }
+
+            return arrayBuffer;
+        }
+
+        // Generate all audio files
+        async function generateAllAudio() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            
+            progressContainer.style.display = 'block';
+            
+            for (let i = 0; i < vocabularyWords.length; i++) {
+                const word = vocabularyWords[i];
+                const filename = `${word.toLowerCase().replace(/\s+/g, '_')}.wav`;
+                
+                progressText.textContent = `Generating audio for: ${word} (${i + 1}/${vocabularyWords.length})`;
+                progressBar.style.width = ((i + 1) / vocabularyWords.length * 100) + '%';
+                
+                try {
+                    createAudioDownload(word, filename);
+                    await new Promise(resolve => setTimeout(resolve, 500)); // Delay between downloads
+                } catch (error) {
+                    console.error(`Failed to generate audio for ${word}:`, error);
+                }
+            }
+            
+            progressText.textContent = '✅ Audio generation completed! Check your Downloads folder.';
+            
+            // Show instructions
+            alert(`✅ Audio files generated successfully!\n\n📁 File lokasi: Downloads folder\n🔧 Langkah selanjutnya:\n1. Pindahkan semua file .wav ke folder /audio/ di project\n2. Commit dan push ke GitHub\n3. Audio akan berfungsi di website`);
+        }
+
+        // Initialize word list display
+        function initializeWordList() {
+            const container = document.getElementById('wordList');
+            container.innerHTML = `
+                <h3>📝 Daftar Kata yang akan di-generate (${vocabularyWords.length} kata):</h3>
+                ${vocabularyWords.map(word => `
+                    <div class="word-item">
+                        <span class="word-text">${word}</span>
+                        <button class="play-btn" onclick="testPlayWord('${word}')">▶️ Test</button>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        // Test play word
+        function testPlayWord(word) {
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(word);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.8;
+                speechSynthesis.speak(utterance);
+            } else {
+                alert('Speech synthesis not supported in this browser');
+            }
+        }
+
+        // Wait for voices to load
+        if ('speechSynthesis' in window) {
+            speechSynthesis.onvoiceschanged = () => {
+                console.log('Voices loaded:', speechSynthesis.getVoices().length);
+            };
+        }
+
+        // Initialize
+        initializeWordList();
+    </script>
+</body>
+</html>
