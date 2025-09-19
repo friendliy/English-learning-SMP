@@ -144,12 +144,14 @@
       font-weight: 600;
     }
     
-    .vocab-image {
-      width: 100%;
-      height: 150px;
-      object-fit: cover;
-      border-radius: 10px;
-      margin-bottom: 15px;
+    .vocab-icon {
+      font-size: 60px;
+      text-align: center;
+      margin: 15px 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border-radius: 15px;
+      border: 2px dashed #dee2e6;
     }
     
     .vocab-example {
@@ -470,12 +472,14 @@
       createWordCard(word) {
         const isLearned = this.learned.includes(word.word);
         const isFavorited = this.favorites.includes(word.word);
+        const wordIcon = this.getWordIcon(word.word, word.category);
         
         if (this.currentMode === 'flashcard') {
           return `
             <div class="vocab-card" onclick="this.classList.toggle('flipped')">
               <div class="flashcard-inner">
                 <div class="flashcard-front">
+                  <div class="vocab-icon">${wordIcon}</div>
                   <div class="vocab-word">${word.word}</div>
                   <div class="vocab-pronunciation">${word.pronunciation}</div>
                   <div style="margin-top: 20px; color: #7f8c8d;">Klik untuk melihat arti</div>
@@ -502,7 +506,7 @@
             <div class="vocab-pronunciation">${word.pronunciation}</div>
             <div class="vocab-meaning">${word.meaning}</div>
             
-            <img src="${word.image}" alt="${word.word}" class="vocab-image" loading="lazy">
+            <div class="vocab-icon">${wordIcon}</div>
             
             <div class="vocab-example">"${word.example}"</div>
             
@@ -519,6 +523,101 @@
             </div>
           </div>
         `;
+      }
+      
+      getWordIcon(word, category) {
+        // Icon mapping berdasarkan kata dan kategori
+        const iconMap = {
+          // Family
+          'mother': '👩',
+          'father': '👨',
+          'sister': '👧',
+          'brother': '👦',
+          'grandmother': '👵',
+          'grandfather': '👴',
+          'family': '👨‍👩‍👧‍👦',
+          'parent': '👫',
+          'baby': '👶',
+          
+          // Food
+          'apple': '🍎',
+          'banana': '🍌',
+          'orange': '🍊',
+          'rice': '🍚',
+          'bread': '🍞',
+          'water': '💧',
+          'milk': '🥛',
+          'egg': '🥚',
+          'fish': '🐟',
+          'meat': '🥩',
+          'vegetables': '🥬',
+          'fruit': '🍇',
+          'food': '🍽️',
+          
+          // School
+          'school': '🏫',
+          'teacher': '👩‍🏫',
+          'student': '👨‍🎓',
+          'book': '📚',
+          'pencil': '✏️',
+          'desk': '🪑',
+          'classroom': '🏛️',
+          'homework': '📝',
+          'test': '📄',
+          'lesson': '📖',
+          
+          // Animals
+          'cat': '🐱',
+          'dog': '🐶',
+          'bird': '🐦',
+          'fish': '🐠',
+          'elephant': '🐘',
+          'lion': '🦁',
+          'rabbit': '🐰',
+          'tiger': '🐅',
+          'bear': '🐻',
+          'horse': '🐴',
+          
+          // Colors
+          'red': '🔴',
+          'blue': '🔵',
+          'green': '🟢',
+          'yellow': '🟡',
+          'black': '⚫',
+          'white': '⚪',
+          'purple': '🟣',
+          'orange': '🟠',
+          'pink': '🩷',
+          'brown': '🤎',
+          
+          // Home
+          'house': '🏠',
+          'room': '🏠',
+          'kitchen': '🍳',
+          'bedroom': '🛏️',
+          'bathroom': '🚿',
+          'living room': '🛋️',
+          'garden': '🌻',
+          'door': '🚪',
+          'window': '🪟',
+          'table': '🪑'
+        };
+        
+        // Cari icon spesifik untuk kata
+        const specificIcon = iconMap[word.toLowerCase()];
+        if (specificIcon) return specificIcon;
+        
+        // Fallback berdasarkan kategori
+        const categoryIcons = {
+          'Family': '👨‍👩‍👧‍👦',
+          'Food': '🍎',
+          'School': '📚',
+          'Animals': '🐱',
+          'Colors': '🎨',
+          'Home': '🏠'
+        };
+        
+        return categoryIcons[category] || '📝';
       }
       
       playAudio(word) {

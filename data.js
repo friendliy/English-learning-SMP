@@ -1,40 +1,40 @@
 // Kosakata
 const vocabData = [
   // Family & People
-  { word: "Mother", meaning: "Ibu", category: "Family", level: "beginner", image: "https://via.placeholder.com/200x150/FF6B6B/FFFFFF?text=Mother", audio: "", example: "My mother is very kind.", pronunciation: "/ˈmʌðər/" },
-  { word: "Father", meaning: "Ayah", category: "Family", level: "beginner", image: "https://via.placeholder.com/200x150/4ECDC4/FFFFFF?text=Father", audio: "", example: "Father goes to work.", pronunciation: "/ˈfɑːðər/" },
-  { word: "Sister", meaning: "Saudara perempuan", category: "Family", level: "beginner", image: "https://via.placeholder.com/200x150/45B7D1/FFFFFF?text=Sister", audio: "", example: "My sister is younger than me.", pronunciation: "/ˈsɪstər/" },
-  { word: "Brother", meaning: "Saudara laki-laki", category: "Family", level: "beginner", image: "https://via.placeholder.com/200x150/96CEB4/FFFFFF?text=Brother", audio: "", example: "My brother likes soccer.", pronunciation: "/ˈbrʌðər/" },
+  { word: "Mother", meaning: "Ibu", category: "Family", level: "beginner", audio: "", example: "My mother is very kind.", pronunciation: "/ˈmʌðər/" },
+  { word: "Father", meaning: "Ayah", category: "Family", level: "beginner", audio: "", example: "Father goes to work.", pronunciation: "/ˈfɑːðər/" },
+  { word: "Sister", meaning: "Saudara perempuan", category: "Family", level: "beginner", audio: "", example: "My sister is younger than me.", pronunciation: "/ˈsɪstər/" },
+  { word: "Brother", meaning: "Saudara laki-laki", category: "Family", level: "beginner", audio: "", example: "My brother likes soccer.", pronunciation: "/ˈbrʌðər/" },
   
   // Food & Drinks
-  { word: "Apple", meaning: "Apel", category: "Food", level: "beginner", image: "https://via.placeholder.com/200x150/FF6B6B/FFFFFF?text=Apple", audio: "", example: "I eat an apple every day.", pronunciation: "/ˈæpəl/" },
-  { word: "Banana", meaning: "Pisang", category: "Food", level: "beginner", image: "https://via.placeholder.com/200x150/FECA57/FFFFFF?text=Banana", audio: "", example: "The banana is yellow.", pronunciation: "/bəˈnænə/" },
-  { word: "Water", meaning: "Air", category: "Food", level: "beginner", image: "https://via.placeholder.com/200x150/3742FA/FFFFFF?text=Water", audio: "", example: "I drink water every morning.", pronunciation: "/ˈwɔːtər/" },
-  { word: "Rice", meaning: "Nasi", category: "Food", level: "beginner", image: "https://via.placeholder.com/200x150/F1F2F6/000000?text=Rice", audio: "", example: "We eat rice for lunch.", pronunciation: "/raɪs/" },
+  { word: "Apple", meaning: "Apel", category: "Food", level: "beginner", audio: "", example: "I eat an apple every day.", pronunciation: "/ˈæpəl/" },
+  { word: "Banana", meaning: "Pisang", category: "Food", level: "beginner", audio: "", example: "The banana is yellow.", pronunciation: "/bəˈnænə/" },
+  { word: "Water", meaning: "Air", category: "Food", level: "beginner", audio: "", example: "I drink water every morning.", pronunciation: "/ˈwɔːtər/" },
+  { word: "Rice", meaning: "Nasi", category: "Food", level: "beginner", audio: "", example: "We eat rice for lunch.", pronunciation: "/raɪs/" },
   
   // School & Education
-  { word: "Book", meaning: "Buku", category: "School", level: "beginner", image: "https://via.placeholder.com/200x150/2F3542/FFFFFF?text=Book", audio: "", example: "This book is very interesting.", pronunciation: "/bʊk/" },
-  { word: "Pen", meaning: "Pulpen", category: "School", level: "beginner", image: "https://via.placeholder.com/200x150/FF3838/FFFFFF?text=Pen", audio: "", example: "I write with a pen.", pronunciation: "/pen/" },
-  { word: "Teacher", meaning: "Guru", category: "School", level: "beginner", image: "https://via.placeholder.com/200x150/2C2C54/FFFFFF?text=Teacher", audio: "", example: "My teacher is very helpful.", pronunciation: "/ˈtiːtʃər/" },
-  { word: "Classroom", meaning: "Ruang kelas", category: "School", level: "intermediate", image: "https://via.placeholder.com/200x150/40407A/FFFFFF?text=Classroom", audio: "", example: "The classroom is clean.", pronunciation: "/ˈklæsruːm/" },
+  { word: "Book", meaning: "Buku", category: "School", level: "beginner", audio: "", example: "This book is very interesting.", pronunciation: "/bʊk/" },
+  { word: "Pen", meaning: "Pulpen", category: "School", level: "beginner", audio: "", example: "I write with a pen.", pronunciation: "/pen/" },
+  { word: "Teacher", meaning: "Guru", category: "School", level: "beginner", audio: "", example: "My teacher is very helpful.", pronunciation: "/ˈtiːtʃər/" },
+  { word: "Classroom", meaning: "Ruang kelas", category: "School", level: "intermediate", audio: "", example: "The classroom is clean.", pronunciation: "/ˈklæsruːm/" },
   
   // Animals
-  { word: "Cat", meaning: "Kucing", category: "Animals", level: "beginner", image: "https://via.placeholder.com/200x150/FFA502/FFFFFF?text=Cat", audio: "", example: "The cat is sleeping.", pronunciation: "/kæt/" },
-  { word: "Dog", meaning: "Anjing", category: "Animals", level: "beginner", image: "https://via.placeholder.com/200x150/FF6348/FFFFFF?text=Dog", audio: "", example: "My dog likes to play.", pronunciation: "/dɔːɡ/" },
-  { word: "Bird", meaning: "Burung", category: "Animals", level: "beginner", image: "https://via.placeholder.com/200x150/7BED9F/FFFFFF?text=Bird", audio: "", example: "The bird can fly high.", pronunciation: "/bɜːrd/" },
-  { word: "Fish", meaning: "Ikan", category: "Animals", level: "beginner", image: "https://via.placeholder.com/200x150/70A1FF/FFFFFF?text=Fish", audio: "", example: "Fish live in the water.", pronunciation: "/fɪʃ/" },
+  { word: "Cat", meaning: "Kucing", category: "Animals", level: "beginner", audio: "", example: "The cat is sleeping.", pronunciation: "/kæt/" },
+  { word: "Dog", meaning: "Anjing", category: "Animals", level: "beginner", audio: "", example: "My dog likes to play.", pronunciation: "/dɔːɡ/" },
+  { word: "Bird", meaning: "Burung", category: "Animals", level: "beginner", audio: "", example: "The bird can fly high.", pronunciation: "/bɜːrd/" },
+  { word: "Fish", meaning: "Ikan", category: "Animals", level: "beginner", audio: "", example: "Fish live in the water.", pronunciation: "/fɪʃ/" },
   
   // Colors
-  { word: "Red", meaning: "Merah", category: "Colors", level: "beginner", image: "https://via.placeholder.com/200x150/FF0000/FFFFFF?text=Red", audio: "", example: "The rose is red.", pronunciation: "/red/" },
-  { word: "Blue", meaning: "Biru", category: "Colors", level: "beginner", image: "https://via.placeholder.com/200x150/0000FF/FFFFFF?text=Blue", audio: "", example: "The sky is blue.", pronunciation: "/bluː/" },
-  { word: "Green", meaning: "Hijau", category: "Colors", level: "beginner", image: "https://via.placeholder.com/200x150/00FF00/FFFFFF?text=Green", audio: "", example: "Grass is green.", pronunciation: "/ɡriːn/" },
-  { word: "Yellow", meaning: "Kuning", category: "Colors", level: "beginner", image: "https://via.placeholder.com/200x150/FFFF00/000000?text=Yellow", audio: "", example: "The sun is yellow.", pronunciation: "/ˈjeloʊ/" },
+  { word: "Red", meaning: "Merah", category: "Colors", level: "beginner", audio: "", example: "The rose is red.", pronunciation: "/red/" },
+  { word: "Blue", meaning: "Biru", category: "Colors", level: "beginner", audio: "", example: "The sky is blue.", pronunciation: "/bluː/" },
+  { word: "Green", meaning: "Hijau", category: "Colors", level: "beginner", audio: "", example: "Grass is green.", pronunciation: "/ɡriːn/" },
+  { word: "Yellow", meaning: "Kuning", category: "Colors", level: "beginner", audio: "", example: "The sun is yellow.", pronunciation: "/ˈjeloʊ/" },
   
   // House & Home
-  { word: "House", meaning: "Rumah", category: "Home", level: "beginner", image: "https://via.placeholder.com/200x150/8B4513/FFFFFF?text=House", audio: "", example: "I live in a big house.", pronunciation: "/haʊs/" },
-  { word: "Door", meaning: "Pintu", category: "Home", level: "beginner", image: "https://via.placeholder.com/200x150/654321/FFFFFF?text=Door", audio: "", example: "Please close the door.", pronunciation: "/dɔːr/" },
-  { word: "Window", meaning: "Jendela", category: "Home", level: "beginner", image: "https://via.placeholder.com/200x150/87CEEB/FFFFFF?text=Window", audio: "", example: "I opened the window.", pronunciation: "/ˈwɪndoʊ/" },
-  { word: "Table", meaning: "Meja", category: "Home", level: "beginner", image: "https://via.placeholder.com/200x150/DEB887/000000?text=Table", audio: "", example: "The book is on the table.", pronunciation: "/ˈteɪbəl/" }
+  { word: "House", meaning: "Rumah", category: "Home", level: "beginner", audio: "", example: "I live in a big house.", pronunciation: "/haʊs/" },
+  { word: "Door", meaning: "Pintu", category: "Home", level: "beginner", audio: "", example: "Please close the door.", pronunciation: "/dɔːr/" },
+  { word: "Window", meaning: "Jendela", category: "Home", level: "beginner", audio: "", example: "I opened the window.", pronunciation: "/ˈwɪndoʊ/" },
+  { word: "Table", meaning: "Meja", category: "Home", level: "beginner", audio: "", example: "The book is on the table.", pronunciation: "/ˈteɪbəl/" }
 ];
 
 // Listening Practice Data
