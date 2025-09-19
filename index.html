@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>English Learning SMP - Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .main-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: 1200px;
+      width: 100%;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .welcome-section {
+      color: white;
+      text-align: left;
+    }
+    
+    .welcome-title {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .welcome-subtitle {
+      font-size: 20px;
+      margin-bottom: 30px;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+    
+    .features-preview {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 30px;
+    }
+    
+    .feature-preview {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s;
+    }
+    
+    .feature-preview:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-5px);
+    }
+    
+    .feature-icon {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+    
+    .feature-name {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    
+    .feature-desc {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    .login-section {
+      background: white;
+      border-radius: 25px;
+      padding: 50px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 1s ease-out;
+    }
+    
+    .login-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #3498db, #2ecc71, #e74c3c, #f39c12);
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background: linear-gradient(90deg, #3498db, #2ecc71, #e74c3c, #f39c12); }
+      33% { background: linear-gradient(90deg, #2ecc71, #e74c3c, #f39c12, #3498db); }
+      66% { background: linear-gradient(90deg, #e74c3c, #f39c12, #3498db, #2ecc71); }
+    }
+    
+    .login-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .app-logo {
+      font-size: 80px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #3498db, #2ecc71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .login-title {
+      font-size: 32px;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    .login-subtitle {
+      color: #7f8c8d;
+      font-size: 16px;
+    }
+    
+    .auth-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .auth-btn {
+      padding: 18px 25px;
+      border: none;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .auth-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .auth-btn:hover::before {
+      left: 100%;
+    }
+    
+    .login-btn {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      box-shadow: 0 8px 25px rgba(52, 152, 219, 0.3);
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(52, 152, 219, 0.4);
+    }
+    
+    .register-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      box-shadow: 0 8px 25px rgba(46, 204, 113, 0.3);
+    }
+    
+    .register-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 35px rgba(46, 204, 113, 0.4);
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 30px 0;
+      position: relative;
+    }
+    
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ecf0f1;
+    }
+    
+    .divider span {
+      background: white;
+      padding: 0 20px;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+    
+    .guest-btn {
+      background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .guest-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .guest-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(149, 165, 166, 0.3);
+    }
+    
+    .guest-btn:hover::before {
+      left: 100%;
+    }
+    
+    .stats-preview {
+      margin-top: 40px;
+      padding: 30px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+    
+    .stats-title {
+      color: white;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .stat-item {
+      text-align: center;
+      color: white;
+    }
+    
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      color: #f1c40f;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      opacity: 0.8;
+    }
+    
+    @media (max-width: 968px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        text-align: center;
+      }
+      
+      .welcome-section {
+        text-align: center;
+        order: 2;
+      }
+      
+      .login-section {
+        order: 1;
+        padding: 40px 30px;
+      }
+      
+      .welcome-title {
+        font-size: 36px;
+      }
+      
+      .features-preview {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .main-container {
+        gap: 20px;
+      }
+      
+      .login-section {
+        padding: 30px 25px;
+      }
+      
+      .welcome-title {
+        font-size: 28px;
+      }
+      
+      .welcome-subtitle {
+        font-size: 16px;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container">
+    <!-- Welcome Section -->
+    <div class="welcome-section">
+      <h1 class="welcome-title">📘 English Learning SMP</h1>
+      <p class="welcome-subtitle">
+        Platform belajar bahasa Inggris terlengkap untuk siswa SMP. 
+        Tingkatkan kemampuan vocabulary, listening, dan grammar dengan metode interaktif yang menyenangkan!
+      </p>
+      
+      <div class="features-preview">
+        <div class="feature-preview">
+          <div class="feature-icon">📖</div>
+          <div class="feature-name">Vocabulary Harian</div>
+          <div class="feature-desc">Flashcard interaktif dengan pronunciation</div>
+        </div>
+        <div class="feature-preview">
+          <div class="feature-icon">🎧</div>
+          <div class="feature-name">Listening Practice</div>
+          <div class="feature-desc">Audio conversation dan exercise</div>
+        </div>
+        <div class="feature-preview">
+          <div class="feature-icon">✍️</div>
+          <div class="feature-name">Grammar Quiz</div>
+          <div class="feature-desc">Test kemampuan grammar dan writing</div>
+        </div>
+        <div class="feature-preview">
+          <div class="feature-icon">🏆</div>
+          <div class="feature-name">Leaderboard</div>
+          <div class="feature-desc">Kompetisi dengan teman sekelas</div>
+        </div>
+      </div>
+      
+      <div class="stats-preview">
+        <div class="stats-title">🌟 Statistik Platform</div>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-number">500+</div>
+            <div class="stat-label">Vocabulary</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100+</div>
+            <div class="stat-label">Quiz Soal</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">50+</div>
+            <div class="stat-label">Audio Practice</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">1000+</div>
+            <div class="stat-label">Siswa Aktif</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Login Section -->
+    <div class="login-section">
+      <div class="login-header">
+        <div class="app-logo">🎓</div>
+        <h2 class="login-title">Selamat Datang!</h2>
+        <p class="login-subtitle">Masuk untuk mulai belajar bahasa Inggris</p>
+      </div>
+      
+      <div class="auth-buttons">
+        <a href="login.html" class="auth-btn login-btn">
+          🔑 Masuk ke Akun
+        </a>
+        <a href="register.html" class="auth-btn register-btn">
+          ✨ Daftar Akun Baru
+        </a>
+      </div>
+      
+      <div class="divider">
+        <span>atau</span>
+      </div>
+      
+      <button class="guest-btn" onclick="loginAsGuest()">
+        👤 Coba sebagai Tamu
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is already logged in
+    function checkAuthStatus() {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      if (currentUser) {
+        // User is already logged in, redirect to dashboard
+        window.location.href = 'dashboard.html';
+      }
+    }
+    
+    function loginAsGuest() {
+      // Create guest user
+      const guestUser = {
+        name: "Tamu",
+        username: "guest_" + Date.now(),
+        score: 0,
+        level: 'Beginner',
+        completedQuizzes: 0,
+        vocabularyMastered: 0,
+        streak: 0,
+        lastActive: new Date().toISOString().split('T')[0],
+        achievements: [],
+        isGuest: true,
+        joinDate: new Date().toISOString().split('T')[0]
+      };
+      
+      localStorage.setItem("currentUser", JSON.stringify(guestUser));
+      
+      // Show notification
+      showNotification('Masuk sebagai Tamu berhasil! Mengarahkan ke dashboard... 👤', 'info');
+      
+      // Redirect to dashboard
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1500);
+    }
+    
+    function showNotification(message, type = 'info') {
+      const colors = {
+        success: 'linear-gradient(135deg, #27ae60, #2ecc71)',
+        error: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+        info: 'linear-gradient(135deg, #3498db, #2980b9)',
+        warning: 'linear-gradient(135deg, #f39c12, #e67e22)'
+      };
+      
+      const icons = {
+        success: '✅',
+        error: '❌',
+        info: 'ℹ️',
+        warning: '⚠️'
+      };
+      
+      const notification = document.createElement('div');
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${colors[type]};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+        animation: slideInRight 0.5s ease-out;
+        max-width: 300px;
+      `;
+      
+      notification.innerHTML = `<div style="font-weight: bold;">${icons[type]} ${message}</div>`;
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.parentNode.removeChild(notification);
+        }
+      }, 3000);
+    }
+    
+    // Add animation styles
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideInRight {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Check auth status when page loads
+    checkAuthStatus();
+    
+    // Animate stats numbers when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      const statNumbers = document.querySelectorAll('.stat-number');
+      statNumbers.forEach(stat => {
+        const finalNumber = stat.textContent;
+        const numericValue = parseInt(finalNumber.replace(/\D/g, ''));
+        let currentNumber = 0;
+        const increment = numericValue / 50;
+        
+        const timer = setInterval(() => {
+          currentNumber += increment;
+          if (currentNumber >= numericValue) {
+            stat.textContent = finalNumber;
+            clearInterval(timer);
+          } else {
+            stat.textContent = Math.floor(currentNumber) + (finalNumber.includes('+') ? '+' : '');
+          }
+        }, 30);
+      });
+    });
+  </script>
+</body>
+</html>

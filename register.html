@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daftar - English Learning SMP</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .register-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .register-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="2" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>') repeat;
+      animation: float 20s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    
+    .register-card {
+      background: white;
+      border-radius: 25px;
+      padding: 50px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+      z-index: 2;
+      animation: slideUp 1s ease-out;
+      overflow: hidden;
+    }
+    
+    .register-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, #2ecc71, #3498db, #9b59b6, #e67e22);
+      animation: gradientShift 3s ease-in-out infinite;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes gradientShift {
+      0%, 100% { background: linear-gradient(90deg, #2ecc71, #3498db, #9b59b6, #e67e22); }
+      33% { background: linear-gradient(90deg, #3498db, #9b59b6, #e67e22, #2ecc71); }
+      66% { background: linear-gradient(90deg, #9b59b6, #e67e22, #2ecc71, #3498db); }
+    }
+    
+    .register-header {
+      margin-bottom: 30px;
+    }
+    
+    .register-header h1 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .register-header p {
+      color: #7f8c8d;
+      margin: 0;
+    }
+    
+    .app-logo {
+      font-size: 80px;
+      margin-bottom: 25px;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      color: #2c3e50;
+      font-weight: 600;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 18px 25px;
+      border: 2px solid #ecf0f1;
+      border-radius: 15px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+      background: #f8f9fa;
+      position: relative;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #2ecc71;
+      box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.1);
+      background: white;
+      transform: translateY(-2px);
+    }
+    
+    .form-input:hover {
+      border-color: #bdc3c7;
+      background: white;
+    }
+    
+    .form-input.success {
+      border-color: #27ae60;
+      box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+      background: #f8fff8;
+    }
+    
+    .form-input.error {
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+      background: #fff8f8;
+    }
+    
+    .validation-message {
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+    
+    .validation-message.error {
+      color: #e74c3c;
+      display: block;
+    }
+    
+    .validation-message.success {
+      color: #27ae60;
+      display: block;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .password-strength {
+      margin-top: 10px;
+    }
+    
+    .strength-bar {
+      height: 4px;
+      background: #ecf0f1;
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 5px;
+    }
+    
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s;
+      border-radius: 2px;
+    }
+    
+    .strength-text {
+      font-size: 12px;
+      color: #7f8c8d;
+    }
+    
+    .register-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      padding: 18px;
+      border-radius: 15px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .register-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.5s;
+    }
+    
+    .register-btn:hover:not(:disabled) {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 30px rgba(46, 204, 113, 0.4);
+    }
+    
+    .register-btn:hover:not(:disabled)::before {
+      left: 100%;
+    }
+    
+    .register-btn:disabled {
+      background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .register-btn:disabled::before {
+      display: none;
+    }
+    
+    .divider {
+      margin: 30px 0;
+      position: relative;
+      text-align: center;
+    }
+    
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ecf0f1;
+    }
+    
+    .divider span {
+      background: white;
+      padding: 0 20px;
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+    
+    .login-link {
+      color: #3498db;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    
+    .login-link:hover {
+      color: #2980b9;
+    }
+    
+    .back-home {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+    }
+    
+    .back-home:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+    
+    .benefits {
+      margin-top: 30px;
+      padding-top: 30px;
+      border-top: 1px solid #ecf0f1;
+    }
+    
+    .benefit-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    
+    .benefit-icon {
+      font-size: 20px;
+      margin-right: 10px;
+      width: 30px;
+    }
+    
+    .benefit-text {
+      color: #7f8c8d;
+      font-size: 14px;
+    }
+    
+    .loading {
+      display: none;
+      margin-left: 10px;
+    }
+    
+    .spinner {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #2ecc71;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .grade-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    
+    .grade-option {
+      padding: 15px;
+      border: 2px solid #ecf0f1;
+      border-radius: 15px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      font-weight: bold;
+      background: #f8f9fa;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .grade-option::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(46, 204, 113, 0.1), rgba(39, 174, 96, 0.1));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .grade-option:hover {
+      border-color: #2ecc71;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+      background: white;
+    }
+    
+    .grade-option:hover::before {
+      opacity: 1;
+    }
+    
+    .grade-option.selected {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(46, 204, 113, 0.3);
+    }
+    
+    .grade-option.selected::before {
+      opacity: 0;
+    }
+    
+    @media (max-width: 768px) {
+      .register-card {
+        margin: 0 15px;
+        padding: 30px 25px;
+      }
+      
+      .back-home {
+        position: relative;
+        top: 0;
+        left: 0;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .grade-selector {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-home">← Kembali ke Beranda</a>
+  
+  <div class="register-container">
+    <div class="register-card">
+      <div class="register-header">
+        <div class="app-logo">📚</div>
+        <h1>Bergabung dengan Kami!</h1>
+        <p>Buat akun untuk mulai belajar bahasa Inggris</p>
+      </div>
+      
+      <form id="registerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName" class="form-label">Nama Lengkap</label>
+            <input type="text" id="fullName" class="form-input" placeholder="Masukkan nama lengkap" required>
+            <div class="validation-message" id="fullNameMessage"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="username" class="form-label">Nama Pengguna</label>
+            <input type="text" id="username" class="form-input" placeholder="Pilih nama pengguna" required>
+            <div class="validation-message" id="usernameMessage"></div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="email" class="form-label">Email (Opsional)</label>
+          <input type="email" id="email" class="form-input" placeholder="Masukkan email Anda">
+          <div class="validation-message" id="emailMessage"></div>
+        </div>
+        
+        <div class="form-group">
+          <label for="grade" class="form-label">Kelas</label>
+          <div class="grade-selector">
+            <div class="grade-option" data-grade="7">Kelas 7</div>
+            <div class="grade-option" data-grade="8">Kelas 8</div>
+            <div class="grade-option" data-grade="9">Kelas 9</div>
+          </div>
+          <input type="hidden" id="grade" required>
+          <div class="validation-message" id="gradeMessage"></div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" id="password" class="form-input" placeholder="Buat password" required>
+            <div class="password-strength">
+              <div class="strength-bar">
+                <div class="strength-fill" id="strengthFill"></div>
+              </div>
+              <div class="strength-text" id="strengthText">Masukkan password</div>
+            </div>
+            <div class="validation-message" id="passwordMessage"></div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">Konfirmasi Password</label>
+            <input type="password" id="confirmPassword" class="form-input" placeholder="Konfirmasi password" required>
+            <div class="validation-message" id="confirmPasswordMessage"></div>
+          </div>
+        </div>
+        
+        <button type="submit" class="register-btn" id="registerBtn" disabled>
+          Daftar Sekarang
+          <div class="loading" id="registerLoading">
+            <div class="spinner"></div>
+          </div>
+        </button>
+      </form>
+      
+      <div class="divider">
+        <span>atau</span>
+      </div>
+      
+      <p>Sudah punya akun? <a href="login.html" class="login-link">Masuk di sini</a></p>
+      
+      <div class="benefits">
+        <h3 style="color: #2c3e50; margin-bottom: 15px; font-size: 16px;">Keuntungan Bergabung:</h3>
+        <div class="benefit-item">
+          <div class="benefit-icon">🎯</div>
+          <div class="benefit-text">Pembelajaran sesuai tingkat kelas Anda</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">📈</div>
+          <div class="benefit-text">Tracking progress dan pencapaian</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">🏆</div>
+          <div class="benefit-text">Kompetisi dengan teman-teman</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">⭐</div>
+          <div class="benefit-text">Badge dan reward untuk motivasi</div>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-icon">💾</div>
+          <div class="benefit-text">Data tersimpan aman selamanya</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class RegisterManager {
+      constructor() {
+        this.selectedGrade = null;
+        this.init();
+      }
+      
+      init() {
+        // Check if already logged in
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        if (currentUser && !currentUser.isGuest) {
+          window.location.href = 'index.html';
+          return;
+        }
+        
+        this.setupEventListeners();
+      }
+      
+      setupEventListeners() {
+        const form = document.getElementById('registerForm');
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleRegister();
+        });
+        
+        // Real-time validation
+        document.getElementById('fullName').addEventListener('input', (e) => {
+          this.validateFullName(e.target.value);
+          this.checkFormValidity();
+        });
+        
+        document.getElementById('username').addEventListener('input', (e) => {
+          this.validateUsername(e.target.value);
+          this.checkFormValidity();
+        });
+        
+        document.getElementById('email').addEventListener('input', (e) => {
+          this.validateEmail(e.target.value);
+          this.checkFormValidity();
+        });
+        
+        document.getElementById('password').addEventListener('input', (e) => {
+          this.validatePassword(e.target.value);
+          this.checkFormValidity();
+        });
+        
+        document.getElementById('confirmPassword').addEventListener('input', (e) => {
+          this.validateConfirmPassword(e.target.value);
+          this.checkFormValidity();
+        });
+        
+        // Grade selection
+        document.querySelectorAll('.grade-option').forEach(option => {
+          option.addEventListener('click', (e) => {
+            this.selectGrade(e.target.dataset.grade);
+          });
+        });
+      }
+      
+      selectGrade(grade) {
+        // Remove previous selection
+        document.querySelectorAll('.grade-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        
+        // Add new selection
+        document.querySelector(`[data-grade="${grade}"]`).classList.add('selected');
+        document.getElementById('grade').value = grade;
+        this.selectedGrade = grade;
+        
+        this.clearValidation('grade');
+        this.checkFormValidity();
+      }
+      
+      validateFullName(value) {
+        const field = 'fullName';
+        
+        if (!value.trim()) {
+          return this.showValidation(field, 'Nama lengkap wajib diisi', 'error');
+        }
+        
+        if (value.trim().length < 3) {
+          return this.showValidation(field, 'Nama minimal 3 karakter', 'error');
+        }
+        
+        if (!/^[a-zA-Z\s]+$/.test(value)) {
+          return this.showValidation(field, 'Nama hanya boleh berisi huruf dan spasi', 'error');
+        }
+        
+        this.showValidation(field, 'Nama valid ✓', 'success');
+        return true;
+      }
+      
+      validateUsername(value) {
+        const field = 'username';
+        
+        if (!value.trim()) {
+          return this.showValidation(field, 'Nama pengguna wajib diisi', 'error');
+        }
+        
+        if (value.length < 3) {
+          return this.showValidation(field, 'Minimal 3 karakter', 'error');
+        }
+        
+        if (value.length > 20) {
+          return this.showValidation(field, 'Maksimal 20 karakter', 'error');
+        }
+        
+        if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+          return this.showValidation(field, 'Hanya huruf, angka, dan underscore', 'error');
+        }
+        
+        // Check if username already exists
+        const userProfiles = JSON.parse(localStorage.getItem("userProfiles")) || {};
+        if (userProfiles[value]) {
+          return this.showValidation(field, 'Nama pengguna sudah digunakan', 'error');
+        }
+        
+        this.showValidation(field, 'Nama pengguna tersedia ✓', 'success');
+        return true;
+      }
+      
+      validateEmail(value) {
+        const field = 'email';
+        
+        if (!value.trim()) {
+          this.clearValidation(field);
+          return true; // Email is optional
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          return this.showValidation(field, 'Format email tidak valid', 'error');
+        }
+        
+        this.showValidation(field, 'Email valid ✓', 'success');
+        return true;
+      }
+      
+      validatePassword(value) {
+        const field = 'password';
+        
+        if (!value) {
+          this.updatePasswordStrength(0, 'Masukkan password');
+          return this.showValidation(field, 'Password wajib diisi', 'error');
+        }
+        
+        let strength = 0;
+        let feedback = [];
+        
+        // Length check
+        if (value.length >= 8) {
+          strength += 25;
+        } else {
+          feedback.push('minimal 8 karakter');
+        }
+        
+        // Uppercase check
+        if (/[A-Z]/.test(value)) {
+          strength += 25;
+        } else {
+          feedback.push('huruf besar');
+        }
+        
+        // Lowercase check
+        if (/[a-z]/.test(value)) {
+          strength += 25;
+        } else {
+          feedback.push('huruf kecil');
+        }
+        
+        // Number or special character check
+        if (/[0-9!@#$%^&*]/.test(value)) {
+          strength += 25;
+        } else {
+          feedback.push('angka/simbol');
+        }
+        
+        let strengthText, isValid;
+        
+        if (strength === 100) {
+          strengthText = 'Password sangat kuat ✓';
+          isValid = true;
+        } else if (strength >= 75) {
+          strengthText = 'Password kuat ✓';
+          isValid = true;
+        } else if (strength >= 50) {
+          strengthText = 'Password sedang';
+          isValid = value.length >= 6; // Allow medium passwords if at least 6 chars
+        } else {
+          strengthText = `Perlu: ${feedback.join(', ')}`;
+          isValid = false;
+        }
+        
+        this.updatePasswordStrength(strength, strengthText);
+        
+        if (isValid) {
+          this.showValidation(field, '', 'success');
+          return true;
+        } else {
+          this.showValidation(field, 'Password terlalu lemah', 'error');
+          return false;
+        }
+      }
+      
+      validateConfirmPassword(value) {
+        const field = 'confirmPassword';
+        const password = document.getElementById('password').value;
+        
+        if (!value) {
+          return this.showValidation(field, 'Konfirmasi password wajib diisi', 'error');
+        }
+        
+        if (value !== password) {
+          return this.showValidation(field, 'Password tidak cocok', 'error');
+        }
+        
+        this.showValidation(field, 'Password cocok ✓', 'success');
+        return true;
+      }
+      
+      updatePasswordStrength(strength, text) {
+        const fill = document.getElementById('strengthFill');
+        const textEl = document.getElementById('strengthText');
+        
+        fill.style.width = strength + '%';
+        textEl.textContent = text;
+        
+        // Color based on strength
+        if (strength >= 75) {
+          fill.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+        } else if (strength >= 50) {
+          fill.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
+        } else {
+          fill.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+        }
+      }
+      
+      showValidation(field, message, type) {
+        const input = document.getElementById(field);
+        const messageEl = document.getElementById(field + 'Message');
+        
+        messageEl.textContent = message;
+        messageEl.className = `validation-message ${type}`;
+        input.className = `form-input ${type}`;
+        
+        return type === 'success';
+      }
+      
+      clearValidation(field) {
+        const input = document.getElementById(field);
+        const messageEl = document.getElementById(field + 'Message');
+        
+        messageEl.style.display = 'none';
+        input.classList.remove('success', 'error');
+      }
+      
+      checkFormValidity() {
+        const fullName = document.getElementById('fullName').value;
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        
+        const isValid = 
+          this.validateFullName(fullName) &&
+          this.validateUsername(username) &&
+          this.validatePassword(password) &&
+          this.validateConfirmPassword(confirmPassword) &&
+          this.selectedGrade;
+        
+        document.getElementById('registerBtn').disabled = !isValid;
+      }
+      
+      async handleRegister() {
+        const formData = {
+          fullName: document.getElementById('fullName').value.trim(),
+          username: document.getElementById('username').value.trim(),
+          email: document.getElementById('email').value.trim(),
+          grade: this.selectedGrade,
+          password: document.getElementById('password').value
+        };
+        
+        // Final validation
+        if (!this.validateAllFields(formData)) {
+          return;
+        }
+        
+        // Show loading
+        this.setLoading(true);
+        
+        // Simulate API call
+        await this.delay(2000);
+        
+        try {
+          // Create user profile
+          const userProfile = {
+            name: formData.fullName,
+            username: formData.username,
+            email: formData.email,
+            grade: parseInt(formData.grade),
+            password: formData.password, // In real app, this would be hashed
+            score: 0,
+            level: 'Beginner',
+            completedQuizzes: 0,
+            vocabularyMastered: 0,
+            streak: 0,
+            joinDate: new Date().toISOString().split('T')[0],
+            lastActive: new Date().toISOString().split('T')[0],
+            lastLogin: new Date().toISOString(),
+            achievements: [
+              {
+                id: 'welcome',
+                name: 'Selamat Datang!',
+                description: 'Bergabung dengan English Learning SMP',
+                icon: '🎉',
+                unlockedAt: new Date().toISOString()
+              }
+            ],
+            progress: {
+              vocabulary: {},
+              quizzes: [],
+              listening: []
+            }
+          };
+          
+          // Save to localStorage
+          const userProfiles = JSON.parse(localStorage.getItem("userProfiles")) || {};
+          userProfiles[formData.username] = userProfile;
+          localStorage.setItem("userProfiles", JSON.stringify(userProfiles));
+          localStorage.setItem("currentUser", JSON.stringify(userProfile));
+          
+          // Show success message
+          this.showSuccessMessage('Pendaftaran berhasil! Mengarahkan ke dashboard...');
+          
+          // Update leaderboard
+          this.updateLeaderboard(userProfile);
+          
+          // Redirect after delay
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 2000);
+          
+        } catch (error) {
+          this.showErrorMessage('Terjadi kesalahan. Silakan coba lagi.');
+        } finally {
+          this.setLoading(false);
+        }
+      }
+      
+      validateAllFields(data) {
+        let isValid = true;
+        
+        if (!this.validateFullName(data.fullName)) isValid = false;
+        if (!this.validateUsername(data.username)) isValid = false;
+        if (data.email && !this.validateEmail(data.email)) isValid = false;
+        if (!this.validatePassword(data.password)) isValid = false;
+        if (!this.validateConfirmPassword(document.getElementById('confirmPassword').value)) isValid = false;
+        
+        if (!data.grade) {
+          this.showValidation('grade', 'Pilih kelas Anda', 'error');
+          isValid = false;
+        }
+        
+        return isValid;
+      }
+      
+      updateLeaderboard(userProfile) {
+        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+        leaderboard.push({
+          name: userProfile.name,
+          username: userProfile.username,
+          score: userProfile.score,
+          level: userProfile.level,
+          grade: userProfile.grade
+        });
+        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+      }
+      
+      setLoading(isLoading) {
+        const btn = document.getElementById('registerBtn');
+        const loading = document.getElementById('registerLoading');
+        
+        btn.disabled = isLoading;
+        loading.style.display = isLoading ? 'inline-block' : 'none';
+        btn.textContent = isLoading ? 'Mendaftar... ' : 'Daftar Sekarang';
+        
+        if (isLoading) {
+          btn.appendChild(loading);
+        }
+      }
+      
+      showSuccessMessage(message) {
+        this.showNotification(message, 'success');
+      }
+      
+      showErrorMessage(message) {
+        this.showNotification(message, 'error');
+      }
+      
+      showNotification(message, type) {
+        const colors = {
+          success: 'linear-gradient(135deg, #27ae60, #2ecc71)',
+          error: 'linear-gradient(135deg, #e74c3c, #c0392b)'
+        };
+        
+        const icons = {
+          success: '✅',
+          error: '❌'
+        };
+        
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: ${colors[type]};
+          color: white;
+          padding: 15px 20px;
+          border-radius: 10px;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          z-index: 10000;
+          font-family: Arial, sans-serif;
+          animation: slideIn 0.5s ease-out;
+          max-width: 300px;
+        `;
+        
+        notification.innerHTML = `<div style="font-weight: bold;">${icons[type]} ${message}</div>`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+          if (notification.parentNode) {
+            notification.parentNode.removeChild(notification);
+          }
+        }, 4000);
+      }
+      
+      delay(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+    }
+    
+    // Add slide-in animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Initialize register manager
+    const registerManager = new RegisterManager();
+  </script>
+</body>
+</html>
