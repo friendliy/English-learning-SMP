@@ -412,38 +412,50 @@
   </div>
 
   <script>
-    class LoginManager {
-      constructor() {
-        this.init();
-      }
+    // Sistem pengelola login yang dibuat khusus untuk aplikasi ini
+    var pengelolaLogin = {
       
-      init() {
-        // Check if already logged in
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        if (currentUser) {
-          this.redirectToDashboard();
-          return;
+      // Memulai sistem saat halaman dimuat
+      inisialisasi: function() {
+        this.periksaStatusLogin();
+        this.pasangEventListener();
+      },
+      
+      // Mengecek apakah user sudah login
+      periksaStatusLogin: function() {
+        var dataUser = localStorage.getItem("currentUser");
+        if (dataUser) {
+          try {
+            var pengguna = JSON.parse(dataUser);
+            if (pengguna && pengguna.name) {
+              this.arahkanKeDashboard();
+              return;
+            }
+          } catch (error) {
+            localStorage.removeItem("currentUser");
+          }
         }
-        
-        this.setupEventListeners();
-      }
+      },
       
-      setupEventListeners() {
-        const form = document.getElementById('loginForm');
-        form.addEventListener('submit', (e) => {
+      // Memasang event listener untuk form
+      pasangEventListener: function() {
+        var formLogin = document.getElementById('loginForm');
+        var self = this;
+        
+        formLogin.addEventListener('submit', function(e) {
           e.preventDefault();
-          this.handleLogin();
+          self.prosesLogin();
         });
         
-        // Real-time validation
-        document.getElementById('username').addEventListener('input', () => {
-          this.clearError('username');
+        // Validasi real-time
+        document.getElementById('username').addEventListener('input', function() {
+          self.hapusError('username');
         });
         
-        document.getElementById('password').addEventListener('input', () => {
-          this.clearError('password');
+        document.getElementById('password').addEventListener('input', function() {
+          self.hapusError('password');
         });
-      }
+      },
       
       async handleLogin() {
         const username = document.getElementById('username').value.trim();
@@ -519,33 +531,33 @@
         } finally {
           this.setLoading(false);
         }
-      }
+      },
       
-      showError(fieldName, message) {
-        const input = document.getElementById(fieldName);
-        const errorElement = document.getElementById(fieldName + 'Error');
+      showError: function(fieldName, message) {
+        var input = document.getElementById(fieldName);
+        var errorElement = document.getElementById(fieldName + 'Error');
         
         input.classList.add('error');
         errorElement.textContent = message;
         errorElement.style.display = 'block';
-      }
+      },
       
-      clearError(fieldName) {
-        const input = document.getElementById(fieldName);
-        const errorElement = document.getElementById(fieldName + 'Error');
+      clearError: function(fieldName) {
+        var input = document.getElementById(fieldName);
+        var errorElement = document.getElementById(fieldName + 'Error');
         
         input.classList.remove('error');
         errorElement.style.display = 'none';
-      }
+      },
       
-      clearAllErrors() {
+      clearAllErrors: function() {
         this.clearError('username');
         this.clearError('password');
-      }
+      },
       
-      setLoading(isLoading) {
-        const btn = document.getElementById('loginBtn');
-        const loading = document.getElementById('loginLoading');
+      setLoading: function(isLoading) {
+        var btn = document.getElementById('loginBtn');
+        var loading = document.getElementById('loginLoading');
         
         btn.disabled = isLoading;
         loading.style.display = isLoading ? 'inline-block' : 'none';
@@ -554,12 +566,12 @@
         if (isLoading) {
           btn.appendChild(loading);
         }
-      }
+      },
       
-      showSuccessMessage(message) {
-        // Create success notification
-        const notification = document.createElement('div');
-        notification.style.cssText = `
+      showSuccessMessage: function(message) {
+        // Buat notifikasi sukses
+        var notifikasi = document.createElement('div');
+        notifikasi.style.cssText = `
           position: fixed;
           top: 20px;
           right: 20px;
@@ -573,33 +585,35 @@
           animation: slideIn 0.5s ease-out;
         `;
         
-        notification.innerHTML = `<div style="font-weight: bold;">✅ ${message}</div>`;
-        document.body.appendChild(notification);
+        notifikasi.innerHTML = '<div style="font-weight: bold;">✅ ' + message + '</div>';
+        document.body.appendChild(notifikasi);
         
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
+        setTimeout(function() {
+          if (notifikasi.parentNode) {
+            notifikasi.parentNode.removeChild(notifikasi);
           }
         }, 3000);
-      }
+      },
       
-      redirectToDashboard() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const redirect = urlParams.get('redirect') || 'dashboard.html';
+      redirectToDashboard: function() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var redirect = urlParams.get('redirect') || 'dashboard.html';
         window.location.href = redirect;
-      }
+      },
       
-      delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
+      delay: function(ms) {
+        return new Promise(function(resolve) { 
+          setTimeout(resolve, ms); 
+        });
       }
     }
     
     function loginAsGuest() {
-      // Create a temporary guest user
-      const guestUser = {
+      // Buat pengguna tamu sementara
+      var penggunaTamu = {
         name: "Tamu",
         score: 0,
-        level: 'Beginner',
+        level: 'Pemula',
         completedQuizzes: 0,
         vocabularyMastered: 0,
         streak: 0,
@@ -608,11 +622,11 @@
         isGuest: true
       };
       
-      localStorage.setItem("currentUser", JSON.stringify(guestUser));
+      localStorage.setItem("currentUser", JSON.stringify(penggunaTamu));
       
-      // Show success message
-      const notification = document.createElement('div');
-      notification.style.cssText = `
+      // Tampilkan pesan sukses
+      var notifikasi = document.createElement('div');
+      notifikasi.style.cssText = `
         position: fixed;
         top: 20px;
         right: 20px;
@@ -623,21 +637,21 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         z-index: 10000;
         font-family: Arial, sans-serif;
-        animation: slideIn 0.5s ease-out;
+        animation: animasiMasuk 0.5s ease-out;
       `;
       
-      notification.innerHTML = `<div style="font-weight: bold;">👤 Masuk sebagai Tamu</div>`;
-      document.body.appendChild(notification);
+      notifikasi.innerHTML = '<div style="font-weight: bold;">👤 Masuk sebagai Tamu</div>';
+      document.body.appendChild(notifikasi);
       
-      setTimeout(() => {
+      setTimeout(function() {
         window.location.href = 'dashboard.html';
       }, 1000);
     }
     
-    // Add slide-in animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
+    // Tambahkan animasi masuk
+    var gaya = document.createElement('style');
+    gaya.textContent = `
+      @keyframes animasiMasuk {
         from {
           transform: translateX(100%);
           opacity: 0;
@@ -648,10 +662,13 @@
         }
       }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(gaya);
     
-    // Initialize login manager
-    const loginManager = new LoginManager();
+    // Inisialisasi pengelola login
+    document.addEventListener('DOMContentLoaded', function() {
+      pengelolaLogin.inisialisasi();
+    });
+  </script>
   </script>
 </body>
 </html>

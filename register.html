@@ -528,450 +528,447 @@
   </div>
 
   <script>
-    class RegisterManager {
-      constructor() {
-        this.selectedGrade = null;
-        this.init();
-      }
+    var pengelolaRegistrasi = {
+      kelasYangDipilih: null,
       
-      init() {
-        // Check if already logged in
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        if (currentUser && !currentUser.isGuest) {
+      inisialisasi: function() {
+        // Cek apakah sudah login
+        var penggunaSaatIni = JSON.parse(localStorage.getItem("currentUser"));
+        if (penggunaSaatIni && !penggunaSaatIni.isGuest) {
           window.location.href = 'index.html';
           return;
         }
         
-        this.setupEventListeners();
-      }
+        this.aturEventListener();
+      },
       
-      setupEventListeners() {
-        const form = document.getElementById('registerForm');
-        form.addEventListener('submit', (e) => {
+      aturEventListener: function() {
+        var form = document.getElementById('registerForm');
+        var self = this;
+        form.addEventListener('submit', function(e) {
           e.preventDefault();
-          this.handleRegister();
+          self.prosesRegistrasi();
         });
         
-        // Real-time validation
-        document.getElementById('fullName').addEventListener('input', (e) => {
-          this.validateFullName(e.target.value);
-          this.checkFormValidity();
+        // Validasi real-time
+        document.getElementById('fullName').addEventListener('input', function(e) {
+          self.validasiNamaLengkap(e.target.value);
+          self.cekValiditasForm();
         });
         
-        document.getElementById('username').addEventListener('input', (e) => {
-          this.validateUsername(e.target.value);
-          this.checkFormValidity();
+        document.getElementById('username').addEventListener('input', function(e) {
+          self.validasiNamaPengguna(e.target.value);
+          self.cekValiditasForm();
         });
         
-        document.getElementById('email').addEventListener('input', (e) => {
-          this.validateEmail(e.target.value);
-          this.checkFormValidity();
+        document.getElementById('email').addEventListener('input', function(e) {
+          self.validasiEmail(e.target.value);
+          self.cekValiditasForm();
         });
         
-        document.getElementById('password').addEventListener('input', (e) => {
-          this.validatePassword(e.target.value);
-          this.checkFormValidity();
+        document.getElementById('password').addEventListener('input', function(e) {
+          self.validasiKataSandi(e.target.value);
+          self.cekValiditasForm();
         });
         
-        document.getElementById('confirmPassword').addEventListener('input', (e) => {
-          this.validateConfirmPassword(e.target.value);
-          this.checkFormValidity();
+        document.getElementById('confirmPassword').addEventListener('input', function(e) {
+          self.validasiKonfirmasiKataSandi(e.target.value);
+          self.cekValiditasForm();
         });
         
-        // Grade selection
-        document.querySelectorAll('.grade-option').forEach(option => {
-          option.addEventListener('click', (e) => {
-            this.selectGrade(e.target.dataset.grade);
+        // Pemilihan kelas
+        var opsiKelas = document.querySelectorAll('.grade-option');
+        for (var i = 0; i < opsiKelas.length; i++) {
+          opsiKelas[i].addEventListener('click', function(e) {
+            self.pilihKelas(e.target.dataset.grade);
           });
-        });
-      }
+        }
+      },
       
-      selectGrade(grade) {
-        // Remove previous selection
-        document.querySelectorAll('.grade-option').forEach(option => {
-          option.classList.remove('selected');
-        });
+      pilihKelas: function(kelas) {
+        // Hapus pilihan sebelumnya
+        var opsiKelas = document.querySelectorAll('.grade-option');
+        for (var i = 0; i < opsiKelas.length; i++) {
+          opsiKelas[i].classList.remove('selected');
+        }
         
-        // Add new selection
-        document.querySelector(`[data-grade="${grade}"]`).classList.add('selected');
-        document.getElementById('grade').value = grade;
-        this.selectedGrade = grade;
+        // Tambah pilihan baru
+        document.querySelector('[data-grade="' + kelas + '"]').classList.add('selected');
+        document.getElementById('grade').value = kelas;
+        this.kelasYangDipilih = kelas;
         
-        this.clearValidation('grade');
-        this.checkFormValidity();
-      }
+        this.hapusValidasi('grade');
+        this.cekValiditasForm();
+      },
       
-      validateFullName(value) {
-        const field = 'fullName';
+      validasiNamaLengkap: function(value) {
+        var field = 'fullName';
         
         if (!value.trim()) {
-          return this.showValidation(field, 'Nama lengkap wajib diisi', 'error');
+          return this.tampilkanValidasi(field, 'Nama lengkap wajib diisi', 'error');
         }
         
         if (value.trim().length < 3) {
-          return this.showValidation(field, 'Nama minimal 3 karakter', 'error');
+          return this.tampilkanValidasi(field, 'Nama minimal 3 karakter', 'error');
         }
         
         if (!/^[a-zA-Z\s]+$/.test(value)) {
-          return this.showValidation(field, 'Nama hanya boleh berisi huruf dan spasi', 'error');
+          return this.tampilkanValidasi(field, 'Nama hanya boleh berisi huruf dan spasi', 'error');
         }
         
-        this.showValidation(field, 'Nama valid ✓', 'success');
+        this.tampilkanValidasi(field, 'Nama valid ✓', 'success');
         return true;
-      }
+      },
       
-      validateUsername(value) {
-        const field = 'username';
+      validasiNamaPengguna: function(value) {
+        var field = 'username';
         
         if (!value.trim()) {
-          return this.showValidation(field, 'Nama pengguna wajib diisi', 'error');
+          return this.tampilkanValidasi(field, 'Nama pengguna wajib diisi', 'error');
         }
         
         if (value.length < 3) {
-          return this.showValidation(field, 'Minimal 3 karakter', 'error');
+          return this.tampilkanValidasi(field, 'Minimal 3 karakter', 'error');
         }
         
         if (value.length > 20) {
-          return this.showValidation(field, 'Maksimal 20 karakter', 'error');
+          return this.tampilkanValidasi(field, 'Maksimal 20 karakter', 'error');
         }
         
         if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-          return this.showValidation(field, 'Hanya huruf, angka, dan underscore', 'error');
+          return this.tampilkanValidasi(field, 'Hanya huruf, angka, dan underscore', 'error');
         }
         
-        // Check if username already exists
-        const userProfiles = JSON.parse(localStorage.getItem("userProfiles")) || {};
-        if (userProfiles[value]) {
-          return this.showValidation(field, 'Nama pengguna sudah digunakan', 'error');
+        // Cek apakah nama pengguna sudah ada
+        var profilPengguna = JSON.parse(localStorage.getItem("userProfiles")) || {};
+        if (profilPengguna[value]) {
+          return this.tampilkanValidasi(field, 'Nama pengguna sudah digunakan', 'error');
         }
         
-        this.showValidation(field, 'Nama pengguna tersedia ✓', 'success');
+        this.tampilkanValidasi(field, 'Nama pengguna tersedia ✓', 'success');
         return true;
-      }
+      },
       
-      validateEmail(value) {
-        const field = 'email';
+      validasiEmail: function(value) {
+        var field = 'email';
         
         if (!value.trim()) {
-          this.clearValidation(field);
-          return true; // Email is optional
+          this.hapusValidasi(field);
+          return true; // Email opsional
         }
         
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          return this.showValidation(field, 'Format email tidak valid', 'error');
+        var regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(value)) {
+          return this.tampilkanValidasi(field, 'Format email tidak valid', 'error');
         }
         
-        this.showValidation(field, 'Email valid ✓', 'success');
+        this.tampilkanValidasi(field, 'Email valid ✓', 'success');
         return true;
-      }
+      },
       
-      validatePassword(value) {
-        const field = 'password';
+      validasiKataSandi: function(value) {
+        var field = 'password';
         
         if (!value) {
-          this.updatePasswordStrength(0, 'Masukkan password');
-          return this.showValidation(field, 'Password wajib diisi', 'error');
+          this.updateKekuatanPassword(0, 'Masukkan password');
+          return this.tampilkanValidasi(field, 'Password wajib diisi', 'error');
         }
         
-        let strength = 0;
-        let feedback = [];
+        var kekuatan = 0;
+        var saran = [];
         
-        // Length check
+        // Cek panjang
         if (value.length >= 8) {
-          strength += 25;
+          kekuatan += 25;
         } else {
-          feedback.push('minimal 8 karakter');
+          saran.push('minimal 8 karakter');
         }
         
-        // Uppercase check
+        // Cek huruf besar
         if (/[A-Z]/.test(value)) {
-          strength += 25;
+          kekuatan += 25;
         } else {
-          feedback.push('huruf besar');
+          saran.push('huruf besar');
         }
         
-        // Lowercase check
+        // Cek huruf kecil
         if (/[a-z]/.test(value)) {
-          strength += 25;
+          kekuatan += 25;
         } else {
-          feedback.push('huruf kecil');
+          saran.push('huruf kecil');
         }
         
-        // Number or special character check
+        // Cek angka atau karakter khusus
         if (/[0-9!@#$%^&*]/.test(value)) {
-          strength += 25;
+          kekuatan += 25;
         } else {
-          feedback.push('angka/simbol');
+          saran.push('angka/simbol');
         }
         
-        let strengthText, isValid;
+        var teksKekuatan, valid;
         
-        if (strength === 100) {
-          strengthText = 'Password sangat kuat ✓';
-          isValid = true;
-        } else if (strength >= 75) {
-          strengthText = 'Password kuat ✓';
-          isValid = true;
-        } else if (strength >= 50) {
-          strengthText = 'Password sedang';
-          isValid = value.length >= 6; // Allow medium passwords if at least 6 chars
+        if (kekuatan === 100) {
+          teksKekuatan = 'Password sangat kuat ✓';
+          valid = true;
+        } else if (kekuatan >= 75) {
+          teksKekuatan = 'Password kuat ✓';
+          valid = true;
+        } else if (kekuatan >= 50) {
+          teksKekuatan = 'Password sedang';
+          valid = value.length >= 6; // Izinkan password sedang jika minimal 6 karakter
         } else {
-          strengthText = `Perlu: ${feedback.join(', ')}`;
-          isValid = false;
+          teksKekuatan = 'Perlu: ' + saran.join(', ');
+          valid = false;
         }
         
-        this.updatePasswordStrength(strength, strengthText);
+        this.updateKekuatanPassword(kekuatan, teksKekuatan);
         
-        if (isValid) {
-          this.showValidation(field, '', 'success');
+        if (valid) {
+          this.tampilkanValidasi(field, '', 'success');
           return true;
         } else {
-          this.showValidation(field, 'Password terlalu lemah', 'error');
+          this.tampilkanValidasi(field, 'Password terlalu lemah', 'error');
           return false;
         }
-      }
+      },
       
-      validateConfirmPassword(value) {
-        const field = 'confirmPassword';
-        const password = document.getElementById('password').value;
+      validasiKonfirmasiKataSandi: function(value) {
+        var field = 'confirmPassword';
+        var password = document.getElementById('password').value;
         
         if (!value) {
-          return this.showValidation(field, 'Konfirmasi password wajib diisi', 'error');
+          return this.tampilkanValidasi(field, 'Konfirmasi password wajib diisi', 'error');
         }
         
         if (value !== password) {
-          return this.showValidation(field, 'Password tidak cocok', 'error');
+          return this.tampilkanValidasi(field, 'Password tidak cocok', 'error');
         }
         
-        this.showValidation(field, 'Password cocok ✓', 'success');
+        this.tampilkanValidasi(field, 'Password cocok ✓', 'success');
         return true;
-      }
+      },
       
-      updatePasswordStrength(strength, text) {
-        const fill = document.getElementById('strengthFill');
-        const textEl = document.getElementById('strengthText');
+      updateKekuatanPassword: function(kekuatan, teks) {
+        var fill = document.getElementById('strengthFill');
+        var textEl = document.getElementById('strengthText');
         
-        fill.style.width = strength + '%';
-        textEl.textContent = text;
+        fill.style.width = kekuatan + '%';
+        textEl.textContent = teks;
         
-        // Color based on strength
-        if (strength >= 75) {
+        // Warna berdasarkan kekuatan
+        if (kekuatan >= 75) {
           fill.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
-        } else if (strength >= 50) {
+        } else if (kekuatan >= 50) {
           fill.style.background = 'linear-gradient(135deg, #f39c12, #e67e22)';
         } else {
           fill.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
         }
-      }
+      },
       
-      showValidation(field, message, type) {
-        const input = document.getElementById(field);
-        const messageEl = document.getElementById(field + 'Message');
+      tampilkanValidasi: function(field, pesan, tipe) {
+        var input = document.getElementById(field);
+        var pesanEl = document.getElementById(field + 'Message');
         
-        messageEl.textContent = message;
-        messageEl.className = `validation-message ${type}`;
-        input.className = `form-input ${type}`;
+        pesanEl.textContent = pesan;
+        pesanEl.className = 'validation-message ' + tipe;
+        input.className = 'form-input ' + tipe;
         
-        return type === 'success';
-      }
+        return tipe === 'success';
+      },
       
-      clearValidation(field) {
-        const input = document.getElementById(field);
-        const messageEl = document.getElementById(field + 'Message');
+      hapusValidasi: function(field) {
+        var input = document.getElementById(field);
+        var pesanEl = document.getElementById(field + 'Message');
         
-        messageEl.style.display = 'none';
+        pesanEl.style.display = 'none';
         input.classList.remove('success', 'error');
-      }
+      },
       
-      checkFormValidity() {
-        const fullName = document.getElementById('fullName').value;
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-        const confirmPassword = document.getElementById('confirmPassword').value;
+      cekValiditasForm: function() {
+        var namaLengkap = document.getElementById('fullName').value;
+        var namaPengguna = document.getElementById('username').value;
+        var kataSandi = document.getElementById('password').value;
+        var konfirmasiKataSandi = document.getElementById('confirmPassword').value;
         
-        const isValid = 
-          this.validateFullName(fullName) &&
-          this.validateUsername(username) &&
-          this.validatePassword(password) &&
-          this.validateConfirmPassword(confirmPassword) &&
-          this.selectedGrade;
+        var valid = 
+          this.validasiNamaLengkap(namaLengkap) &&
+          this.validasiNamaPengguna(namaPengguna) &&
+          this.validasiKataSandi(kataSandi) &&
+          this.validasiKonfirmasiKataSandi(konfirmasiKataSandi) &&
+          this.kelasYangDipilih;
         
-        document.getElementById('registerBtn').disabled = !isValid;
-      }
+        document.getElementById('registerBtn').disabled = !valid;
+      },
       
-      async handleRegister() {
-        const formData = {
+      prosesRegistrasi: function() {
+        var self = this;
+        var dataForm = {
           fullName: document.getElementById('fullName').value.trim(),
           username: document.getElementById('username').value.trim(),
           email: document.getElementById('email').value.trim(),
-          grade: this.selectedGrade,
+          grade: this.kelasYangDipilih,
           password: document.getElementById('password').value
         };
         
-        // Final validation
-        if (!this.validateAllFields(formData)) {
+        // Validasi final
+        if (!this.validasiSemuaField(dataForm)) {
           return;
         }
         
-        // Show loading
-        this.setLoading(true);
+        // Tampilkan loading
+        this.aturLoading(true);
         
-        // Simulate API call
-        await this.delay(2000);
-        
-        try {
-          // Create user profile
-          const userProfile = {
-            name: formData.fullName,
-            username: formData.username,
-            email: formData.email,
-            grade: parseInt(formData.grade),
-            password: formData.password, // In real app, this would be hashed
-            score: 0,
-            level: 'Beginner',
-            completedQuizzes: 0,
-            vocabularyMastered: 0,
-            streak: 0,
-            joinDate: new Date().toISOString().split('T')[0],
-            lastActive: new Date().toISOString().split('T')[0],
-            lastLogin: new Date().toISOString(),
-            achievements: [
-              {
-                id: 'welcome',
-                name: 'Selamat Datang!',
-                description: 'Bergabung dengan English Learning SMP',
-                icon: '🎉',
-                unlockedAt: new Date().toISOString()
+        // Simulasi panggilan API
+        setTimeout(function() {
+          try {
+            // Buat profil pengguna
+            var profilPengguna = {
+              name: dataForm.fullName,
+              username: dataForm.username,
+              email: dataForm.email,
+              grade: parseInt(dataForm.grade),
+              password: dataForm.password, // Dalam aplikasi nyata, ini akan di-hash
+              score: 0,
+              level: 'Pemula',
+              completedQuizzes: 0,
+              vocabularyMastered: 0,
+              streak: 0,
+              joinDate: new Date().toISOString().split('T')[0],
+              lastActive: new Date().toISOString().split('T')[0],
+              lastLogin: new Date().toISOString(),
+              achievements: [
+                {
+                  id: 'welcome',
+                  name: 'Selamat Datang!',
+                  description: 'Bergabung dengan English Learning SMP',
+                  icon: '🎉',
+                  unlockedAt: new Date().toISOString()
+                }
+              ],
+              progress: {
+                vocabulary: {},
+                quizzes: [],
+                listening: []
               }
-            ],
-            progress: {
-              vocabulary: {},
-              quizzes: [],
-              listening: []
-            }
-          };
-          
-          // Save to localStorage
-          const userProfiles = JSON.parse(localStorage.getItem("userProfiles")) || {};
-          userProfiles[formData.username] = userProfile;
-          localStorage.setItem("userProfiles", JSON.stringify(userProfiles));
-          localStorage.setItem("currentUser", JSON.stringify(userProfile));
-          
-          // Show success message
-          this.showSuccessMessage('Pendaftaran berhasil! Mengarahkan ke dashboard...');
-          
-          // Update leaderboard
-          this.updateLeaderboard(userProfile);
-          
-          // Redirect after delay
-          setTimeout(() => {
-            window.location.href = 'dashboard.html';
-          }, 2000);
-          
-        } catch (error) {
-          this.showErrorMessage('Terjadi kesalahan. Silakan coba lagi.');
-        } finally {
-          this.setLoading(false);
-        }
-      }
+            };
+            
+            // Simpan ke localStorage
+            var daftarProfil = JSON.parse(localStorage.getItem("userProfiles")) || {};
+            daftarProfil[dataForm.username] = profilPengguna;
+            localStorage.setItem("userProfiles", JSON.stringify(daftarProfil));
+            localStorage.setItem("currentUser", JSON.stringify(profilPengguna));
+            
+            // Tampilkan pesan sukses
+            self.tampilkanPesanSukses('Pendaftaran berhasil! Mengarahkan ke dashboard...');
+            
+            // Update leaderboard
+            self.updatePapanSkor(profilPengguna);
+            
+            // Redirect setelah delay
+            setTimeout(function() {
+              window.location.href = 'dashboard.html';
+            }, 2000);
+            
+          } catch (error) {
+            self.tampilkanPesanError('Terjadi kesalahan. Silakan coba lagi.');
+          } finally {
+            self.aturLoading(false);
+          }
+        }, 2000);
+      },
       
-      validateAllFields(data) {
-        let isValid = true;
+      validasiSemuaField: function(data) {
+        var valid = true;
         
-        if (!this.validateFullName(data.fullName)) isValid = false;
-        if (!this.validateUsername(data.username)) isValid = false;
-        if (data.email && !this.validateEmail(data.email)) isValid = false;
-        if (!this.validatePassword(data.password)) isValid = false;
-        if (!this.validateConfirmPassword(document.getElementById('confirmPassword').value)) isValid = false;
+        if (!this.validasiNamaLengkap(data.fullName)) valid = false;
+        if (!this.validasiNamaPengguna(data.username)) valid = false;
+        if (data.email && !this.validasiEmail(data.email)) valid = false;
+        if (!this.validasiKataSandi(data.password)) valid = false;
+        if (!this.validasiKonfirmasiKataSandi(document.getElementById('confirmPassword').value)) valid = false;
         
         if (!data.grade) {
-          this.showValidation('grade', 'Pilih kelas Anda', 'error');
-          isValid = false;
+          this.tampilkanValidasi('grade', 'Pilih kelas Anda', 'error');
+          valid = false;
         }
         
-        return isValid;
-      }
+        return valid;
+      },
       
-      updateLeaderboard(userProfile) {
-        let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
-        leaderboard.push({
-          name: userProfile.name,
-          username: userProfile.username,
-          score: userProfile.score,
-          level: userProfile.level,
-          grade: userProfile.grade
+      updatePapanSkor: function(profilPengguna) {
+        var papanSkor = JSON.parse(localStorage.getItem("leaderboard")) || [];
+        papanSkor.push({
+          name: profilPengguna.name,
+          username: profilPengguna.username,
+          score: profilPengguna.score,
+          level: profilPengguna.level,
+          grade: profilPengguna.grade
         });
-        localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
-      }
+        localStorage.setItem("leaderboard", JSON.stringify(papanSkor));
+      },
       
-      setLoading(isLoading) {
-        const btn = document.getElementById('registerBtn');
-        const loading = document.getElementById('registerLoading');
+      aturLoading: function(sedangLoading) {
+        var btn = document.getElementById('registerBtn');
+        var loading = document.getElementById('registerLoading');
         
-        btn.disabled = isLoading;
-        loading.style.display = isLoading ? 'inline-block' : 'none';
-        btn.textContent = isLoading ? 'Mendaftar... ' : 'Daftar Sekarang';
+        btn.disabled = sedangLoading;
+        loading.style.display = sedangLoading ? 'inline-block' : 'none';
+        btn.textContent = sedangLoading ? 'Mendaftar... ' : 'Daftar Sekarang';
         
-        if (isLoading) {
+        if (sedangLoading) {
           btn.appendChild(loading);
         }
-      }
+      },
       
-      showSuccessMessage(message) {
-        this.showNotification(message, 'success');
-      }
+      tampilkanPesanSukses: function(pesan) {
+        this.tampilkanNotifikasi(pesan, 'success');
+      },
       
-      showErrorMessage(message) {
-        this.showNotification(message, 'error');
-      }
+      tampilkanPesanError: function(pesan) {
+        this.tampilkanNotifikasi(pesan, 'error');
+      },
       
-      showNotification(message, type) {
-        const colors = {
+      tampilkanNotifikasi: function(pesan, tipe) {
+        var warna = {
           success: 'linear-gradient(135deg, #27ae60, #2ecc71)',
           error: 'linear-gradient(135deg, #e74c3c, #c0392b)'
         };
         
-        const icons = {
+        var ikon = {
           success: '✅',
           error: '❌'
         };
         
-        const notification = document.createElement('div');
-        notification.style.cssText = `
+        var notifikasi = document.createElement('div');
+        notifikasi.style.cssText = `
           position: fixed;
           top: 20px;
           right: 20px;
-          background: ${colors[type]};
+          background: ${warna[tipe]};
           color: white;
           padding: 15px 20px;
           border-radius: 10px;
           box-shadow: 0 4px 15px rgba(0,0,0,0.3);
           z-index: 10000;
           font-family: Arial, sans-serif;
-          animation: slideIn 0.5s ease-out;
+          animation: animasiMasuk 0.5s ease-out;
           max-width: 300px;
         `;
         
-        notification.innerHTML = `<div style="font-weight: bold;">${icons[type]} ${message}</div>`;
-        document.body.appendChild(notification);
+        notifikasi.innerHTML = '<div style="font-weight: bold;">' + ikon[tipe] + ' ' + pesan + '</div>';
+        document.body.appendChild(notifikasi);
         
-        setTimeout(() => {
-          if (notification.parentNode) {
-            notification.parentNode.removeChild(notification);
+        setTimeout(function() {
+          if (notifikasi.parentNode) {
+            notifikasi.parentNode.removeChild(notifikasi);
           }
         }, 4000);
       }
-      
-      delay(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-      }
-    }
+    };
     
-    // Add slide-in animation
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes slideIn {
+    // Tambah animasi masuk
+    var gayaAnimasi = document.createElement('style');
+    gayaAnimasi.textContent = `
+      @keyframes animasiMasuk {
         from {
           transform: translateX(100%);
           opacity: 0;
@@ -982,10 +979,13 @@
         }
       }
     `;
-    document.head.appendChild(style);
+    document.head.appendChild(gayaAnimasi);
     
-    // Initialize register manager
-    const registerManager = new RegisterManager();
+    // Inisialisasi pengelola registrasi
+    document.addEventListener('DOMContentLoaded', function() {
+      pengelolaRegistrasi.inisialisasi();
+    });
+  </script>
   </script>
 </body>
 </html>
